@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "VeriFire",
+  "version": "1.0",
+  "description": "Extract headlines, classify as news, and verify with multi-source AI. Color-coded icons next to each header explain the status.",
+  "permissions": ["activeTab"],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.search.brave.com/*",
+    "https://api.tavily.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/contentScript.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/panel.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

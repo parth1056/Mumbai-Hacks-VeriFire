@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VeriFire Crisis Verification Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #1f2937;
+      line-height: 1.5;
+    }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+      color: white;
+      padding: 24px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    
+    /* Controls bar */
+    .controls {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .control-group {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    
+    .control-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    
+    .btn-danger {
+      background: #dc2626;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+    
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+    
+    /* Status bar */
+    .status-bar {
+      background: #fefce8;
+      border-bottom: 1px solid #fde047;
+      padding: 12px 24px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .status-bar .label {
+      font-weight: 600;
+      color: #854d0e;
+    }
+    
+    .status-bar .value {
+      color: #713f12;
+    }
+    
+    /* Main content */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    
+    @media (max-width: 900px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* News sections */
+    .news-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .section {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .section-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-header.crisis-real {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-bottom-color: #bbf7d0;
+    }
+    
+    .section-header.crisis-fake {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border-bottom-color: #fecaca;
+    }
+    
+    .section-header.crisis-uncertain {
+      background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+      border-bottom-color: #d4d4d4;
+    }
+    
+    .section-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .section-header .badge {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    
+    .badge.green {
+      background: #16a34a;
+      color: white;
+    }
+    
+    .badge.red {
+      background: #dc2626;
+      color: white;
+    }
+    
+    .badge.gray {
+      background: #737373;
+      color: white;
+    }
+    
+    .section-content {
+      padding: 0;
+    }
+    
+    /* Headline items */
+    .headline-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .headline-item:last-child {
+      border-bottom: none;
+    }
+    
+    .headline-item:hover {
+      background: #f9fafb;
+    }
+    
+    .headline-item .type-indicator {
+      flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+    }
+    
+    .headline-item .type-indicator.real {
+      background: #10b981;
+    }
+    
+    .headline-item .type-indicator.fake {
+      background: #ef4444;
+    }
+    
+    .headline-item .type-indicator.unknown {
+      background: #9ca3af;
+    }
+    
+    .headline-link {
+      color: #1f2937;
+      text-decoration: none;
+      font-size: 15px;
+      line-height: 1.4;
+      flex: 1;
+    }
+    
+    .headline-link:hover {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+    
+    .headline-link h3 {
+      font-size: 15px;
+      font-weight: 400;
+      margin: 0;
+      color: inherit;
+    }
+
+    .headline-link:hover h3 {
+      color: #2563eb;
+    }
+    
+    .headline-meta {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    
+    /* Injected headlines container */
+    #injected-headlines {
+      padding: 0;
+    }
+    
+    #injected-headlines:empty::before {
+      content: "No injected headlines yet. Use the buttons above to inject.";
+      display: block;
+      padding: 20px;
+      color: #9ca3af;
+      text-align: center;
+      font-size: 13px;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    /* Legend */
+    .legend {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    
+    .legend h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #374151;
+    }
+    
+    .legend-items {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+    
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+    
+    .legend-dot.gray { background: #9ca3af; }
+    .legend-dot.green { background: #10b981; }
+    .legend-dot.red { background: #ef4444; }
+    
+    .legend-label {
+      color: #4b5563;
+    }
+    
+    /* Debug log */
+    .debug-log {
+      background: #1f2937;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .debug-header {
+      background: #111827;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .debug-header h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f3f4f6;
+    }
+    
+    .debug-header button {
+      padding: 4px 10px;
+      border: none;
+      border-radius: 4px;
+      background: #374151;
+      color: #d1d5db;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    
+    .debug-header button:hover {
+      background: #4b5563;
+    }
+    
+    .debug-content {
+      padding: 12px 16px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+    
+    .log-entry {
+      padding: 4px 0;
+      border-bottom: 1px solid #374151;
+      color: #d1d5db;
+    }
+    
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+    
+    .log-entry.info { color: #60a5fa; }
+    .log-entry.success { color: #34d399; }
+    .log-entry.warning { color: #fbbf24; }
+    .log-entry.error { color: #f87171; }
+    .log-entry.crisis { color: #c084fc; }
+    
+    .log-time {
+      color: #6b7280;
+      margin-right: 8px;
+    }
+    
+    /* Empty state for debug log */
+    .debug-content:empty::before {
+      content: "Waiting for VeriFire activity...";
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1>🔥 VeriFire Crisis Verification Demo</h1>
+    <p>Test crisis detection, verification accuracy, and misinformation detection</p>
+  </header>
+  
+  <!-- Controls bar -->
+  <div class="controls">
+    <div class="control-group">
+      <div class="control-item">
+        <input type="checkbox" id="continuous-scanning" checked>
+        <label for="continuous-scanning">Continuous Scanning</label>
+      </div>
+      <div class="control-item">
+        <input type="checkbox" id="crisis-priority" checked>
+        <label for="crisis-priority">Crisis Priority</label>
+      </div>
+    </div>
+    <div class="control-group">
+      <button class="btn btn-primary" onclick="injectCrisisReal()">
+        + Inject Real Crisis
+      </button>
+      <button class="btn btn-danger" onclick="injectCrisisFake()">
+        🚨 Inject Fake Crisis
+      </button>
+      <button class="btn btn-secondary" onclick="clearInjected()">
+        Clear Injected
+      </button>
+    </div>
+  </div>
+  
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="label">Scan Status:</span>
+    <span class="value" id="scan-status">Idle - waiting for VeriFire extension</span>
+  </div>
+  
+  <!-- Main content -->
+  <main class="main">
+    <!-- News column -->
+    <div class="news-column">
+      <!-- Mixed Headlines Section -->
+      <section class="section">
+        <div class="section-header" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-bottom-color: #cbd5e1;">
+          <h2>📰 News Headlines</h2>
+        </div>
+        <div class="section-content">
+          <!-- Real: GREEN -->
+          <div class="headline-item">
+            <div class="type-indicator real" title="Real crisis"></div>
+            <div>
+              <a class="headline-link" href="https://reuters.com/turkey-earthquake" data-type="crisis-real">
+                <h3 data-verifire-headline="true">Magnitude 7.2 earthquake strikes Turkey, buildings collapse in multiple cities</h3>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Fake: RED -->
+          <div class="headline-item">
+            <div class="type-indicator fake" title="Fake crisis"></div>
+            <div>
+              <a class="headline-link" href="https://fakealerts.example.com/asteroid" data-type="crisis-fake">
+                <h3 data-verifire-headline="true">NASA confirms massive asteroid will destroy Earth next Tuesday</h3>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Uncertain: GRAY -->
+          <div class="headline-item">
+            <div class="type-indicator unknown" title="Uncertain"></div>
+            <div>
+              <a class="headline-link" href="https://local.example.com/illness" data-type="crisis-uncertain">
+                <h3 data-verifire-headline="true">Health officials investigating possible outbreak of unknown respiratory illness</h3>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Real: GREEN -->
+          <div class="headline-item">
+            <div class="type-indicator real" title="Real crisis"></div>
+            <div>
+              <a class="headline-link" href="https://bbc.com/germany-flooding" data-type="crisis-real">
+                <h3 data-verifire-headline="true">Severe flooding in southern Germany forces thousands to evacuate</h3>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Fake: RED -->
+          <div class="headline-item">
+            <div class="type-indicator fake" title="Fake crisis"></div>
+            <div>
+              <a class="headline-link" href="https://fakealerts.example.com/aliens" data-type="crisis-fake">
+                <h3 data-verifire-headline="true">Pentagon confirms alien spacecraft crashed in Nevada</h3>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Uncertain: GRAY -->
+          <div class="headline-item">
+            <div class="type-indicator unknown" title="Uncertain"></div>
+            <div>
+              <a class="headline-link" href="https://local.example.com/explosion" data-type="crisis-uncertain">
+                <h3 data-verifire-headline="true">Unconfirmed reports of large explosion heard near industrial district</h3>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Fake: RED -->
+          <div class="headline-item">
+            <div class="type-indicator fake" title="Fake crisis"></div>
+            <div>
+              <a class="headline-link" href="https://hoaxnews.example.com/nuclear" data-type="crisis-fake">
+                <h3 data-verifire-headline="true">Nuclear reactor explodes in France, government covering up radiation leak</h3>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Real: GREEN -->
+          <div class="headline-item">
+            <div class="type-indicator real" title="Real crisis"></div>
+            <div>
+              <a class="headline-link" href="https://apnews.com/cholera-sudan" data-type="crisis-real">
+                <h3 data-verifire-headline="true">WHO declares cholera outbreak in Sudan a public health emergency</h3>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Uncertain: GRAY -->
+          <div class="headline-item">
+            <div class="type-indicator unknown" title="Uncertain"></div>
+            <div>
+              <a class="headline-link" href="https://local.example.com/seismic" data-type="crisis-uncertain">
+                <h3 data-verifire-headline="true">Reports of unusual seismic activity detected</h3>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Fake: RED -->
+          <div class="headline-item">
+            <div class="type-indicator fake" title="Fake crisis"></div>
+            <div>
+              <a class="headline-link" href="https://conspiracy.example.com/yellowstone" data-type="crisis-fake">
+                <h3 data-verifire-headline="true">ALERT: Yellowstone supervolcano eruption imminent</h3>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Injected Headlines Section -->
+      <section class="section">
+        <div class="section-header" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-bottom-color: #bfdbfe;">
+          <h2>💉 Injected Headlines</h2>
+          <span class="badge" style="background: #2563eb; color: white;">LIVE</span>
+        </div>
+        <div class="section-content" id="injected-headlines">
+          <!-- Dynamically injected headlines will appear here -->
+        </div>
+      </section>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Legend -->
+      <div class="legend">
+        <h3>🎨 Crisis Verification Legend</h3>
+        <div class="legend-items">
+          <div class="legend-item">
+            <div class="legend-dot gray"></div>
+            <span class="legend-label">Verifying / Uncertain</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot green"></div>
+            <span class="legend-label">Crisis Confirmed (Real)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot red"></div>
+            <span class="legend-label">Crisis Fake / No Coverage</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Debug Log -->
+      <div class="debug-log">
+        <div class="debug-header">
+          <h3>📋 Debug Log</h3>
+          <button onclick="clearLog()">Clear</button>
+        </div>
+        <div class="debug-content" id="debug-log">
+          <!-- Log entries will appear here -->
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    // Crisis-only headlines for injection
+    const crisisHeadlines = [
+      // Real crisis
+      { text: "BREAKING: Massive earthquake strikes Indonesia, tsunami warning issued", url: "https://reuters.com/indonesia-quake", type: "crisis-real", expected: "GREEN" },
+      { text: "Explosion at chemical plant forces evacuation of nearby neighborhoods", url: "https://reuters.com/chemical-plant", type: "crisis-real", expected: "GREEN" },
+      { text: "URGENT: Major flooding reported in Bangladesh, thousands stranded", url: "https://apnews.com/bangladesh-flood", type: "crisis-real", expected: "GREEN" },
+      
+      // Fake crisis  
+      { text: "Scientists confirm Earth's magnetic poles will flip next month, global chaos expected", url: "https://hoax.example.com/poles", type: "crisis-fake", expected: "RED" },
+      { text: "ALERT: Massive solar flare will destroy all electronics on Earth tomorrow", url: "https://fake.example.com/solar", type: "crisis-fake", expected: "RED" },
+      { text: "Government admits chemtrails are real, admits to weather manipulation program", url: "https://conspiracy.example.com/chemtrails", type: "crisis-fake", expected: "RED" },
+      
+      // Uncertain
+      { text: "Unverified reports of shots fired near downtown area, police responding", url: "https://local.example.com/shots", type: "crisis-uncertain", expected: "GRAY" },
+      { text: "Residents report strange smell from nearby factory, cause unknown", url: "https://local.example.com/smell", type: "crisis-uncertain", expected: "GRAY" }
+    ];
+    
+    let realIndex = 0;
+    let fakeIndex = 0;
+    
+    // Logging function
+    function log(message, type = 'info') {
+      const logContainer = document.getElementById('debug-log');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      
+      const time = new Date().toLocaleTimeString();
+      entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+      
+      logContainer.appendChild(entry);
+      logContainer.scrollTop = logContainer.scrollHeight;
+      
+      // Also log to console
+      console.log(`[VeriFire Demo] ${message}`);
+    }
+    
+    function clearLog() {
+      document.getElementById('debug-log').innerHTML = '';
+      log('Log cleared', 'info');
+    }
+    
+    // Update status bar
+    function updateStatus(message) {
+      document.getElementById('scan-status').textContent = message;
+    }
+    
+    // Inject a real crisis headline
+    function injectCrisisReal() {
+      const realHeadlines = crisisHeadlines.filter(h => h.type === 'crisis-real');
+      const headline = realHeadlines[realIndex % realHeadlines.length];
+      realIndex++;
+      injectHeadline(headline);
+      log(`Injected REAL crisis: "${headline.text.substring(0, 40)}..."`, 'success');
+    }
+    
+    // Inject a fake crisis headline
+    function injectCrisisFake() {
+      const fakeHeadlines = crisisHeadlines.filter(h => h.type === 'crisis-fake');
+      const headline = fakeHeadlines[fakeIndex % fakeHeadlines.length];
+      fakeIndex++;
+      injectHeadline(headline);
+      log(`🚨 Injected FAKE crisis: "${headline.text.substring(0, 40)}..."`, 'error');
+    }
+    
+    // Generic headline injection
+    function injectHeadline(headline) {
+      const container = document.getElementById('injected-headlines');
+      
+      const item = document.createElement('div');
+      item.className = 'headline-item';
+      
+      const isFake = headline.type.includes('fake');
+      const isUncertain = headline.type.includes('uncertain');
+      
+      item.innerHTML = `
+        <div class="type-indicator ${isFake ? 'fake' : isUncertain ? 'unknown' : 'real'}" title="${headline.type}"></div>
+        <div>
+          <a class="headline-link" href="${headline.url}" data-type="${headline.type}">
+            <h3 data-verifire-headline="true">${headline.text}</h3>
+          </a>
+          <div class="headline-meta">Injected at ${new Date().toLocaleTimeString()} • Expected: ${headline.expected}</div>
+        </div>
+      `;
+      
+      container.appendChild(item);
+      
+      // Trigger custom event for VeriFire
+      window.dispatchEvent(new CustomEvent('verifire-new-content'));
+      
+      updateStatus(`Headline injected - waiting for VeriFire scan...`);
+    }
+    
+    // Clear injected headlines
+    function clearInjected() {
+      document.getElementById('injected-headlines').innerHTML = '';
+      log('Cleared all injected headlines', 'info');
+      updateStatus('Injected headlines cleared');
+    }
+    
+    // Listen for settings changes
+    document.getElementById('continuous-scanning').addEventListener('change', function() {
+      log(`Continuous scanning: ${this.checked ? 'ENABLED' : 'DISABLED'}`, this.checked ? 'success' : 'warning');
+    });
+    
+    document.getElementById('crisis-priority').addEventListener('change', function() {
+      log(`Crisis priority: ${this.checked ? 'ENABLED' : 'DISABLED'}`, this.checked ? 'success' : 'warning');
+    });
+    
+    // Capture VeriFire logs by wrapping console.log
+    // Note: This is a demo-only debugging feature that preserves original functionality
+    // and only captures logs prefixed with [VeriFire]. Safe for testing purposes.
+    const originalConsoleLog = console.log;
+    console.log = function(...args) {
+      originalConsoleLog.apply(console, args);
+      
+      const message = args.join(' ');
+      if (message.includes('[VeriFire]')) {
+        let type = 'info';
+        if (message.includes('CRISIS')) type = 'crisis';
+        else if (message.includes('Result:') && message.includes('confirmed')) type = 'success';
+        else if (message.includes('Result:') && message.includes('contradicted')) type = 'error';
+        else if (message.includes('Skipped')) type = 'warning';
+        
+        const logContainer = document.getElementById('debug-log');
+        if (logContainer) {
+          const entry = document.createElement('div');
+          entry.className = `log-entry ${type}`;
+          const time = new Date().toLocaleTimeString();
+          entry.innerHTML = `<span class="log-time">[${time}]</span> ${message.replace('[VeriFire]', '').trim()}`;
+          logContainer.appendChild(entry);
+          logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        // Update status bar
+        if (message.includes('Starting initial scan')) {
+          updateStatus('VeriFire scanning page...');
+        } else if (message.includes('Found') && message.includes('headlines')) {
+          updateStatus(message.replace('[VeriFire]', '').trim());
+        } else if (message.includes('Summary:')) {
+          updateStatus(message.replace('[VeriFire]', '').trim());
+        }
+      }
+    };
+    
+    // Initial log
+    log('Crisis verification demo loaded. Waiting for VeriFire extension...', 'info');
+    log('Use the buttons above to inject real or fake crisis headlines.', 'info');
+    
+    // Check if extension is active with retry logic
+    const EXTENSION_CHECK_DELAY_MS = 2000;
+    const MAX_RETRIES = 3;
+    let retryCount = 0;
+    
+    function checkExtension() {
+      const dots = document.querySelectorAll('[data-lowkey-ic-id]');
+      if (dots.length > 0) {
+        log(`VeriFire extension detected! Found ${dots.length} verification dots.`, 'success');
+      } else if (retryCount < MAX_RETRIES) {
+        retryCount++;
+        setTimeout(checkExtension, EXTENSION_CHECK_DELAY_MS);
+      } else {
+        log('VeriFire extension not detected. Make sure the extension is installed and enabled.', 'warning');
+      }
+    }
+    
+    setTimeout(checkExtension, EXTENSION_CHECK_DELAY_MS);
+  </script>
+</body>
+</html>

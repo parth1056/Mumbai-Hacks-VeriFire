@@ -1,0 +1,75 @@
+/* VeriFire UI styles with crisis support */
+
+.lk-pop {
+  position: fixed;
+  z-index: 2147483647;
+  background: #fff;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  border-radius: 10px;
+  max-width: 320px;
+  padding: 10px;
+  display: none;
+  font: 13px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+.lk-pop-title { font-weight: 700; margin-bottom: 6px; }
+.lk-pop-row { margin: 6px 0; }
+.lk-pop-reasons { margin: 6px 0; color: #374151; }
+.lk-pop-sources { margin-top: 6px; }
+.lk-pop .lkp-review { margin: 4px 0; }
+.lk-pop .lkp-pub { font-size: 11px; color: #6b7280; }
+.lk-pop .lkp-link { text-decoration: none; color: #0b57d0; }
+.lk-pop .lkp-none { color: #6b7280; }
+.lk-pop .lkp-rating { font-size: 12px; color: #374151; }
+.lk-pop .lk-pop-hint { margin-top: 6px; color: #6b7280; font-size: 12px; }
+
+/* Inline icon dots - base */
+.lk-ic { 
+  width: 10px; 
+  height: 10px; 
+  border-radius: 50%; 
+  border: 1px solid rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.lk-ic:hover {
+  transform: scale(1.3);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Standard colors */
+.lk-ic-gray   { background: #9ca3af; }
+.lk-ic-blue   { background: #2563eb; }
+.lk-ic-green  { background: #10b981; }
+.lk-ic-red    { background: #ef4444; }
+.lk-ic-yellow { background: #eab308; }
+
+/* Crisis pulse animation */
+.lk-ic-crisis {
+  animation: crisis-pulse 1s infinite;
+}
+
+@keyframes crisis-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(156, 163, 175, 0.5); 
+  }
+  50% { 
+    box-shadow: 0 0 0 6px rgba(156, 163, 175, 0); 
+  }
+}
+
+/* Small color badge used inside popover legend */
+.lk-badge { 
+  display: inline-block; 
+  width: 10px; 
+  height: 10px; 
+  border-radius: 50%; 
+  border: 1px solid rgba(0,0,0,0.15); 
+  margin-right: 6px; 
+  vertical-align: middle; 
+}
+.lk-gray   { background: #9ca3af; }
+.lk-blue   { background: #2563eb; }
+.lk-green  { background: #10b981; }
+.lk-red    { background: #ef4444; }
