@@ -66,3 +66,6 @@ Firefox (temporary):
 
 - JavaScript for background and content scripts.
 - HTML/CSS for the injected panel (styled via `panel.css`).
+
+<img width="877" height="436" alt="image" src="https://github.com/user-attachments/assets/399f69be-c971-4808-b97a-6056324a0da7" />
+
